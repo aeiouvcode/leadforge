@@ -1,4 +1,4 @@
-(()=>{'use strict';
+(()=>{'use strict';if('scrollRestoration' in history)history.scrollRestoration='manual';
 const KEY='leadforge.v3'; const LEGACY='lf-leads';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -13,7 +13,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(leads));return true}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),2600)}
 function score(l){let s=15;if(l.name)s+=20;if(l.website)s+=18;if(l.email)s+=18;if(l.phone)s+=12;if(l.location)s+=8;if(l.category)s+=5;if(l.source)s+=4;return Math.min(100,s)}
 const contactable=l=>!!(l.email||l.phone); const duplicateFor=l=>leads.find(x=>x.id!==l.id&&((domain(l.website)&&domain(l.website)===domain(x.website))||(l.email&&l.email.toLowerCase()===String(x.email).toLowerCase())||(l.phone&&l.phone.replace(/\D/g,'').length>6&&l.phone.replace(/\D/g,'')===String(x.phone).replace(/\D/g,''))));
-function route(){const r=['overview','leads','capture'].includes(location.hash.slice(1))?location.hash.slice(1):'overview';$$('.view').forEach(v=>v.hidden=v.id!==r);$$('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===r));$('#pageTitle').textContent={overview:'Overview',leads:'Leads',capture:'Capture'}[r];render(r);scrollTo(0,0)}
+function route(){const r=['overview','leads','capture'].includes(location.hash.slice(1))?location.hash.slice(1):'overview';$$('.view').forEach(v=>v.hidden=v.id!==r);$$('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===r));$('#pageTitle').textContent={overview:'Overview',leads:'Leads',capture:'Capture'}[r];render(r);scrollTo(0,0);requestAnimationFrame(()=>scrollTo(0,0));setTimeout(()=>scrollTo(0,0),80)}
 function syncChrome(){$('#navCount').textContent=leads.length;$('#storageNote').textContent=`${leads.length} record${leads.length===1?'':'s'} · nothing uploaded`}
 function render(r){syncChrome();if(r==='overview')renderOverview();if(r==='leads')renderLeads();if(r==='capture')renderCapture()}
 function empty(title,copy,cta='Capture your first lead'){return `<div class="empty"><div class="empty-icon">◎</div><h3>${title}</h3><p>${copy}</p><a class="button primary" href="#capture">${cta}</a></div>`}
